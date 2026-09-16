@@ -1,0 +1,103 @@
+{
+	"name": "EasyPDF: HTML invoice to PDF",
+	"nodes": [
+		{
+			"parameters": {},
+			"id": "8f0c7a52-0b8e-4c4e-9a5e-1f7c2f0b0a01",
+			"name": "When clicking 'Execute workflow'",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"assignments": {
+					"assignments": [
+						{
+							"id": "a1",
+							"name": "invoice_number",
+							"value": "INV-2026-0042",
+							"type": "string"
+						},
+						{
+							"id": "a2",
+							"name": "customer",
+							"value": "Acme Corp",
+							"type": "string"
+						},
+						{
+							"id": "a3",
+							"name": "total",
+							"value": "1,250.00 EUR",
+							"type": "string"
+						}
+					]
+				},
+				"options": {}
+			},
+			"id": "8f0c7a52-0b8e-4c4e-9a5e-1f7c2f0b0a02",
+			"name": "Invoice data",
+			"type": "n8n-nodes-base.set",
+			"typeVersion": 3.4,
+			"position": [220, 0]
+		},
+		{
+			"parameters": {
+				"resource": "pdf",
+				"operation": "generate",
+				"sourceFormat": "html",
+				"content": "<h1>Invoice {{invoice_number}}</h1>\n<p>Billed to: <strong>{{customer}}</strong></p>\n<table>\n  <tr><th>Description</th><th>Amount</th></tr>\n  <tr><td>Annual subscription</td><td>{{total}}</td></tr>\n</table>",
+				"variables": "={{ JSON.stringify({ invoice_number: $json.invoice_number, customer: $json.customer, total: $json.total }) }}",
+				"pageOptions": {
+					"pageFormat": "A4",
+					"marginTop": "25mm",
+					"footerHtml": "<div style=\"font-size:9px;width:100%;text-align:center\">Page <span class=\"pageNumber\"></span></div>"
+				},
+				"outputBinaryPropertyName": "data",
+				"outputFileName": "={{ $json.invoice_number }}.pdf"
+			},
+			"id": "8f0c7a52-0b8e-4c4e-9a5e-1f7c2f0b0a03",
+			"name": "EasyPDF",
+			"type": "n8n-nodes-easypdf.easyPdf",
+			"typeVersion": 1,
+			"position": [440, 0],
+			"credentials": {
+				"easyPdfApi": {
+					"id": "",
+					"name": "EasyPDF account"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"resource": "usage",
+				"operation": "get"
+			},
+			"id": "8f0c7a52-0b8e-4c4e-9a5e-1f7c2f0b0a04",
+			"name": "EasyPDF usage",
+			"type": "n8n-nodes-easypdf.easyPdf",
+			"typeVersion": 1,
+			"position": [660, 0],
+			"credentials": {
+				"easyPdfApi": {
+					"id": "",
+					"name": "EasyPDF account"
+				}
+			}
+		}
+	],
+	"connections": {
+		"When clicking 'Execute workflow'": {
+			"main": [[{ "node": "Invoice data", "type": "main", "index": 0 }]]
+		},
+		"Invoice data": {
+			"main": [[{ "node": "EasyPDF", "type": "main", "index": 0 }]]
+		},
+		"EasyPDF": {
+			"main": [[{ "node": "EasyPDF usage", "type": "main", "index": 0 }]]
+		}
+	},
+	"settings": {
+		"executionOrder": "v1"
+	}
+}

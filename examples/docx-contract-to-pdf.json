@@ -1,0 +1,65 @@
+{
+	"name": "EasyPDF: fill a DOCX contract and convert it to PDF",
+	"nodes": [
+		{
+			"parameters": {},
+			"id": "3b1d6c1e-6a44-4d0f-8a55-2c0e9d1b0b01",
+			"name": "When clicking 'Execute workflow'",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"url": "https://example.com/templates/contract.docx",
+				"options": {
+					"response": {
+						"response": {
+							"responseFormat": "file"
+						}
+					}
+				}
+			},
+			"id": "3b1d6c1e-6a44-4d0f-8a55-2c0e9d1b0b02",
+			"name": "Download DOCX template",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [220, 0]
+		},
+		{
+			"parameters": {
+				"resource": "pdf",
+				"operation": "convertFile",
+				"binaryPropertyName": "data",
+				"variables": "{\"client_name\": \"Acme Corp\", \"start_date\": \"2026-10-01\"}",
+				"convertOptions": {
+					"inputFileName": "contract.docx"
+				},
+				"outputBinaryPropertyName": "data",
+				"outputFileName": "contract-acme.pdf"
+			},
+			"id": "3b1d6c1e-6a44-4d0f-8a55-2c0e9d1b0b03",
+			"name": "EasyPDF",
+			"type": "n8n-nodes-easypdf.easyPdf",
+			"typeVersion": 1,
+			"position": [440, 0],
+			"credentials": {
+				"easyPdfApi": {
+					"id": "",
+					"name": "EasyPDF account"
+				}
+			}
+		}
+	],
+	"connections": {
+		"When clicking 'Execute workflow'": {
+			"main": [[{ "node": "Download DOCX template", "type": "main", "index": 0 }]]
+		},
+		"Download DOCX template": {
+			"main": [[{ "node": "EasyPDF", "type": "main", "index": 0 }]]
+		}
+	},
+	"settings": {
+		"executionOrder": "v1"
+	}
+}
