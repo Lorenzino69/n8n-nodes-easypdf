@@ -11,7 +11,7 @@
 		},
 		{
 			"parameters": {
-				"url": "https://example.com/templates/contract.docx",
+				"url": "https://raw.githubusercontent.com/Lorenzino69/n8n-nodes-easypdf/main/examples/contract-template.docx",
 				"options": {
 					"response": {
 						"response": {
@@ -31,9 +31,9 @@
 				"resource": "pdf",
 				"operation": "convertFile",
 				"binaryPropertyName": "data",
-				"variables": "{\"client_name\": \"Acme Corp\", \"start_date\": \"2026-10-01\"}",
+				"variables": "{\"client_name\": \"Acme Corp\", \"start_date\": \"1 November 2026\", \"plan\": \"Business\", \"monthly_fee\": \"99 EUR\"}",
 				"convertOptions": {
-					"inputFileName": "contract.docx"
+					"inputFileName": "contract-template.docx"
 				},
 				"outputBinaryPropertyName": "data",
 				"outputFileName": "contract-acme.pdf"
